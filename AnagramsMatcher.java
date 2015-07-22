@@ -11,23 +11,29 @@ import java.util.Iterator;
  */
 //Read a big list of words and write all anagrmas in the same line
 public class AnagramsMatcher {
+
     static String inputFilePath;
     static String outputFilePath;
     InputStream inputStream;
     BufferedInputStream bufferedInputStream;
     BufferedWriter bufferedWriter;
     HashMap<String, ArrayList<String>> map;
+
     public AnagramsMatcher(String inputFilePath, String outputFilePath){
+
         this.inputFilePath = inputFilePath;
         this.outputFilePath = outputFilePath;
         try {
+
             inputStream = new FileInputStream(this.inputFilePath);
             bufferedWriter = new BufferedWriter(new FileWriter(this.outputFilePath));
+
         } catch(FileNotFoundException e) {
             e.printStackTrace();
         } catch(IOException e){
             e.printStackTrace();
         }
+
         bufferedInputStream = new BufferedInputStream(inputStream);
         map = new HashMap<String, ArrayList<String>>();
     }
@@ -38,28 +44,37 @@ public class AnagramsMatcher {
         String sortedString = new String(charArray);
 
         if(map.containsKey(sortedString)){
+
             ArrayList<String> anagramList = map.get(sortedString);
             anagramList.add(currWord);
+
         }else {
+
             ArrayList<String> anagramList = new ArrayList<String>();
             anagramList.add(currWord);
             map.put(sortedString, anagramList);
+
         }
     }
     public int scanFile(){
         int words_read_count = 0;
         String currWord = "";
         try {
+
             while (bufferedInputStream.available() > 0){
+
                 char currChar = (char)bufferedInputStream.read();
                 if(currChar == '\r'){
+
                     currChar = (char)bufferedInputStream.read();
                     addToHashMap(currWord);
                     currWord = "";
                     words_read_count++;
+
                 }else {
                     currWord += currChar;
                 }
+
             }
             //System.out.println(currWord);
             addToHashMap(currWord);
@@ -67,6 +82,7 @@ public class AnagramsMatcher {
 
             inputStream.close();
             bufferedInputStream.close();
+
         } catch(IOException e) {
             e.printStackTrace();
         }
@@ -75,6 +91,7 @@ public class AnagramsMatcher {
     public void writeToFile(){
 
         try {
+
             for(ArrayList list : map.values()){
                 if(list.size() > 1){
 
@@ -86,6 +103,7 @@ public class AnagramsMatcher {
                     bufferedWriter.write("\r\n");
                 }
             }
+
         } catch(IOException e) {
             e.printStackTrace();
         }
@@ -105,13 +123,16 @@ public class AnagramsMatcher {
     public static void main(String args[]){
 
         long start = System.currentTimeMillis();
+
         AnagramsMatcher anagramsMatcher = new AnagramsMatcher(
                 "C:\\Users\\test\\Documents\\BootCamp\\word-list.txt",
                 "C:\\Users\\test\\Documents\\BootCamp\\anagrams.txt");
+
         int ScannedWords = anagramsMatcher.scanFile();
         anagramsMatcher.writeToFile();
+
         long end = System.currentTimeMillis();
-        double time = (end - start) / 1000;
+        double time = (double)(end - start) / 1000;
         System.out.println("Job completed in " + time + "seconds");
     }
 }
